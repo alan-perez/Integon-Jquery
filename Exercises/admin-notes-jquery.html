@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Notes</title>
+    <link rel="stylesheet" href="admin-notes-jquery.css">
+</head>
+<body>
+
+
+
+<h3> Administrador de notas </h3>
+
+<button id="AddNote">Agregar Nota</button>
+
+<div id="createNew">
+   Title <input id="title" type="text" >
+   Content <input id="content" type="text" >
+    <button id="createPost">Create Note</button>
+
+</div>
+<table id="myTable">
+    <tr>
+        <th>Title</th>
+        <th>Content</th>
+        <th>Options</th>
+
+<a href=""></a>
+    </tr>
+</table>
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+
+$( document ).ready(function() { 
+	
+    
+$("#createNew").hide();
+var $title =$('#title');
+var $content =$('#content');
+
+
+$("#AddNote").click(function(){
+    $("div").show();
+});
+
+    $.ajax({
+		url: "http://localhost:3000/notes",
+		contentType: "application/json",
+		dataType: 'json',
+		type:'get',
+		success: function(notesList){
+            notesList.forEach(note => {
+                let newRow = 
+               ` <tr>
+                noteId= ${note._id}
+                <td>${note.title}</td>
+                <td>${note.content}</td>
+                <td>
+                    <a href="#" noteId=${note._id} class="modificarLink">Modificar</a>
+                    <a href="#" noteId=${note._id} class="eliminarLink">Eliminar</a>
+
+                    </td>
+                <tr>`;
+                    console.log(notesList);
+                    $(`#myTable`).append(newRow);
+            });
+
+
+             
+      $("a.modificarLink").click(function(event){
+        event.preventDefault();
+        alert('modifcar');
+    });
+
+
+
+        $('a.eliminarLink').click(function (event){
+        event.preventDefault();
+
+        let notetoDelete = $(this).attr('noteId');
+
+        $.ajax({
+        url:`http://localhost:3000/notes/${notetoDelete}`,
+        type:'DELETE',
+        success:function(result){
+            alert('Nota borrada');
+        }
+        });
+        
+    });
+      
+		},
+		error: function(notesList){
+			console.log('La llamada no se pudo completar');
+		}
+	});
+
+
+  $('#createPost').on('click',function(){
+        var note ={
+            title: $title.val(),
+            content: $content.val(),
+        };
+        
+        $.ajax({
+            type:'POST',
+            url:`http://localhost:3000/notes/`,
+            data: note,
+            success: function(notesList){
+                let newRow = 
+               ` <tr>
+                noteId= ${note._id}
+                <td>${note.title}</td>
+                <td>${note.content}</td>
+                <td>
+                    <a href="#" noteId=${note._id} class="modificarLink">Modificar</a>
+                    <a href="#" noteId=${note._id} class="eliminarLink">Eliminar</a>
+
+                    </td>
+                <tr>`;
+                    console.log(notesList);
+                    $(`#myTable`).append(newRow);
+                
+            },
+            error:function(){
+                alert('error saving order');
+            }
+        });
+  });
+
+
+   
+
+
+});
+
+
+    
+
+    </script>
+    
+
+</body>
+</html>

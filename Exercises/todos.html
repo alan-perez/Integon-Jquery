@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <table id="myTable">
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Completed</th>
+
+        </tr>
+      </table>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+
+$( document ).ready(function() { 
+	$.ajax({
+		url: "https://jsonplaceholder.typicode.com/todos",
+		contentType: "application/json",
+		dataType: 'json',
+		type:'get',
+		success: function(result){
+            result.forEach(todo => {
+                let newRow = 
+               ` <tr>
+                <td>${todo.id}</td>
+                <td>${todo.title}</td>
+                <td>${todo.completed}</td>
+                <tr>`;
+
+                    $(`#myTable`).append(newRow);
+            });
+            $('td:contains(true)').parent().addClass('true');
+			console.log(result);
+		},
+		error: function(result){
+			console.log('La llamada no se pudo completar');
+		}
+	});
+
+});
+
+$('tr').addClass('even');
+
+    </script>
+    <style>
+        tr{
+            border: 1px solid black; 
+        }
+
+        .true{
+            background-color: aqua;
+        }
+    </style>
+</body>
+</html>
